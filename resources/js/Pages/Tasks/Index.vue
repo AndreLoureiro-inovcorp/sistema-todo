@@ -3,11 +3,27 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import TaskFilters from '@/Components/Tasks/TaskFilters.vue';
 import TaskCard from '@/Components/Tasks/TaskCard.vue';
 import { Head, Link } from '@inertiajs/vue3';
+import TaskDetailsModal from '@/Components/Tasks/TaskDetailsModal.vue';
+import { ref } from 'vue';
 
 defineProps({
     tasks: Array,
     filters: Object
 });
+
+const showModal = ref(false);
+const selectedTask = ref(null);
+
+const showTaskDetails = (task) => {
+    selectedTask.value = task;
+    showModal.value = true;
+};
+
+const closeModal = () => {
+    showModal.value = false;
+    selectedTask.value = null;
+};
+
 </script>
 
 <template>
@@ -29,13 +45,14 @@ defineProps({
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <TaskFilters :current-status="filters?.status || 'all'"
-                    :current-priority="filters?.priority || 'all'" />
+                <TaskFilters :current-status="filters?.status || 'all'" :current-priority="filters?.priority || 'all'"
+                    :current-date-filter="filters?.date_filter || 'all'" />
 
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div v-if="tasks.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <TaskCard v-for="task in tasks" :key="task.id" :task="task" />
+                            <TaskCard v-for="task in tasks" :key="task.id" :task="task"
+                                @show-details="showTaskDetails" />
                         </div>
 
                         <div v-else class="text-center py-12">
@@ -47,5 +64,7 @@ defineProps({
                 </div>
             </div>
         </div>
+        <!-- Modal -->
+        <TaskDetailsModal :show="showModal" :task="selectedTask" @close="closeModal" />
     </AuthenticatedLayout>
 </template>

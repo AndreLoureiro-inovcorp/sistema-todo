@@ -8,6 +8,8 @@ const props = defineProps({
     }
 });
 
+const emit = defineEmits(['showDetails']);
+
 const toggleComplete = () => {
     router.patch(route('tasks.toggle', props.task.id), {}, {
         preserveScroll: true,

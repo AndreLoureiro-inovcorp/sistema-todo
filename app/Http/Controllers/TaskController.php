@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Task;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -27,11 +27,29 @@ class TaskController extends Controller
             $query->byPriority($request->priority);
         }
 
+        if ($request->date_filter) {
+            switch ($request->date_filter) {
+                case 'today':
+                    $query->whereDate('due_date', today());
+                    break;
+                case 'week':
+                    $query->whereBetween('due_date', [
+                        now()->startOfWeek(),
+                        now()->endOfWeek(),
+                    ]);
+                    break;
+                case 'overdue':
+                    $query->where('due_date', '<', today())
+                        ->where('is_completed', false);
+                    break;
+            }
+        }
+
         $tasks = $query->latest()->get();
 
         return Inertia::render('Tasks/Index', [
             'tasks' => $tasks,
-            'filters' => $request->only(['status', 'priority'])
+            'filters' => $request->only(['status', 'priority', 'date_filter']),
         ]);
     }
 
@@ -64,7 +82,7 @@ class TaskController extends Controller
         }
 
         return Inertia::render('Tasks/Show', [
-            'task' => $task
+            'task' => $task,
         ]);
     }
 
@@ -78,7 +96,7 @@ class TaskController extends Controller
         }
 
         return Inertia::render('Tasks/Edit', [
-            'task' => $task
+            'task' => $task,
         ]);
     }
 
@@ -118,7 +136,7 @@ class TaskController extends Controller
         }
 
         $task->update([
-            'is_completed' => !$task->is_completed
+            'is_completed' => ! $task->is_completed,
         ]);
 
         return back()->with('success', 'Status atualizado!');

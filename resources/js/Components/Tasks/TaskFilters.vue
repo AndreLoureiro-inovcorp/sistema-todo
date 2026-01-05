@@ -10,11 +10,16 @@ const props = defineProps({
     currentPriority: {
         type: String,
         default: 'all'
+    },
+    currentDateFilter: {
+        type: String,
+        default: 'all'
     }
 });
 
 const statusFilter = ref(props.currentStatus);
 const priorityFilter = ref(props.currentPriority);
+const dateFilter = ref(props.currentDateFilter);
 
 const applyFilters = () => {
     const params = {};
@@ -25,6 +30,10 @@ const applyFilters = () => {
 
     if (priorityFilter.value !== 'all') {
         params.priority = priorityFilter.value;
+    }
+
+    if (dateFilter.value !== 'all') {
+        params.date_filter = dateFilter.value;
     }
 
     router.get(route('tasks.index'), params, {
@@ -105,6 +114,46 @@ const applyFilters = () => {
                                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                         ]">
                             Baixa
+                        </button>
+                    </div>
+                </div>
+
+                <div class="hidden lg:block h-6 w-px bg-gray-300"></div>
+
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <span class="text-sm font-medium text-gray-700">Data:</span>
+                    <div class="flex flex-wrap gap-1">
+                        <button @click="dateFilter = 'all'; applyFilters()" :class="[
+                            'px-3 py-1 rounded text-sm transition',
+                            dateFilter === 'all'
+                                ? 'bg-blue-500 text-white'
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        ]">
+                            Todas
+                        </button>
+                        <button @click="dateFilter = 'today'; applyFilters()" :class="[
+                            'px-3 py-1 rounded text-sm transition',
+                            dateFilter === 'today'
+                                ? 'bg-blue-500 text-white'
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        ]">
+                            Hoje
+                        </button>
+                        <button @click="dateFilter = 'week'; applyFilters()" :class="[
+                            'px-3 py-1 rounded text-sm transition',
+                            dateFilter === 'week'
+                                ? 'bg-blue-500 text-white'
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        ]">
+                            Esta Semana
+                        </button>
+                        <button @click="dateFilter = 'overdue'; applyFilters()" :class="[
+                            'px-3 py-1 rounded text-sm transition',
+                            dateFilter === 'overdue'
+                                ? 'bg-red-600 text-white'
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        ]">
+                            Atrasadas
                         </button>
                     </div>
                 </div>
