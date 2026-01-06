@@ -64,7 +64,6 @@ const closeModal = () => {
                 </div>
             </div>
         </div>
-        <!-- Modal -->
         <TaskDetailsModal :show="showModal" :task="selectedTask" @close="closeModal" />
     </AuthenticatedLayout>
 </template>

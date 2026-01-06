@@ -55,7 +55,6 @@ const deleteTask = () => {
                                 </div>
                             </div>
 
-                            <!-- Descrição -->
                             <div>
                                 <label for="description" class="block text-sm font-medium text-gray-700">
                                     Descrição

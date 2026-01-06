@@ -41,6 +41,7 @@ const getPriorityLabel = (priority) => {
         :class="{ 'opacity-60 bg-gray-50': task.is_completed }" @click="emit('showDetails', task)">
         <div class="flex items-start gap-3 mb-3">
             <input type="checkbox" :checked="task.is_completed" @change="toggleComplete" @click.stop
+                @keydown.enter.prevent="toggleComplete" @keydown.space.prevent="toggleComplete" tabindex="0"
                 class="mt-1 w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
             <h3 class="text-lg font-semibold flex-1" :class="{ 'line-through text-gray-500': task.is_completed }">
                 {{ task.title }}
